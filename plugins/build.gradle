@@ -1,0 +1,17 @@
+plugins {
+    id("groovy-gradle-plugin")
+}
+
+group = "io.github.rieske.java-service-gradle-plugins"
+version = "1.0.0"
+
+tasks.named("test") {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation("com.palantir.gradle.docker:gradle-docker:0.34.0")
+
+    testImplementation(platform("org.spockframework:spock-bom:2.1-groovy-3.0"))
+    testImplementation("org.spockframework:spock-core")
+}

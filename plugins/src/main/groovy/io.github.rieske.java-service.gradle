@@ -1,0 +1,42 @@
+plugins {
+    id("application")
+    id("com.palantir.docker")
+}
+
+testing.suites {
+    blackBoxTest(JvmTestSuite) {
+        targets {
+            all {
+                testTask.configure {
+                    mustRunAfter(test)
+                    dependsOn(tasks.named("docker"))
+                    inputs.files(file("Dockerfile"), tasks.named("distTar")).withPathSensitivity(PathSensitivity.RELATIVE)
+                }
+            }
+        }
+    }
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging.exceptionFormat = "full"
+}
+
+// Make the build reproducible - this enables caching and reusing the artifacts
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.named("check") {
+    it.dependsOn(testing.suites.blackBoxTest)
+}
+
+tasks.named("build") {
+    it.dependsOn(tasks.named("docker"))
+}
+
+docker {
+    name = "${rootProject.name}:snapshot"
+    files(tasks.named("distTar"))
+}
