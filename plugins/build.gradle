@@ -5,6 +5,12 @@ plugins {
 group = "io.github.rieske.java-service-gradle-plugins"
 version = "1.0.0"
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 tasks.named("test") {
     useJUnitPlatform()
 }

@@ -2,11 +2,15 @@ package io.github.rieske
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.util.GradleVersion
 import spock.lang.Specification
 import spock.lang.TempDir
 
 
 abstract class PluginTest extends Specification {
+
+    String gradleVersion = GradleVersion.current().version
+
     @TempDir
     File testProjectDir
 
@@ -33,6 +37,7 @@ abstract class PluginTest extends Specification {
 
     BuildResult runTask(String task) {
         def result = GradleRunner.create()
+                .withGradleVersion(gradleVersion)
                 .withProjectDir(testProjectDir)
                 .withArguments(task, '--stacktrace')
                 .withPluginClasspath()
@@ -43,6 +48,7 @@ abstract class PluginTest extends Specification {
 
     BuildResult runTaskWithFailure(String task) {
         def result = GradleRunner.create()
+                .withGradleVersion(gradleVersion)
                 .withProjectDir(testProjectDir)
                 .withArguments(task, '--stacktrace')
                 .withPluginClasspath()
