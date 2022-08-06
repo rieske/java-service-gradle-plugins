@@ -36,24 +36,22 @@ abstract class PluginTest extends Specification {
     }
 
     BuildResult runTask(String task) {
-        def result = GradleRunner.create()
-                .withGradleVersion(gradleVersion)
-                .withProjectDir(testProjectDir)
-                .withArguments(task, '--stacktrace')
-                .withPluginClasspath()
-                .build()
+        def result = makeGradleRunner(task).build()
         println(result.output)
         return result
     }
 
     BuildResult runTaskWithFailure(String task) {
-        def result = GradleRunner.create()
+        def result = makeGradleRunner(task).buildAndFail()
+        println(result.output)
+        return result
+    }
+
+    private GradleRunner makeGradleRunner(String task) {
+        return GradleRunner.create()
                 .withGradleVersion(gradleVersion)
                 .withProjectDir(testProjectDir)
                 .withArguments(task, '--stacktrace')
                 .withPluginClasspath()
-                .buildAndFail()
-        println(result.output)
-        return result
     }
 }
