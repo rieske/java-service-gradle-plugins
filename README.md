@@ -4,11 +4,24 @@ WIP
 
 ## io.github.rieske.java-service
 
+An opinionated plugin for building and testing a Java service:
+- Compile and unit test the components as usual
+- Package the application using Gradle's core `application` plugin.
+Might play with Spring and such as well, but I'm not a fan of all that heavyweight magic -
+just pick a library for a server, a library for JDBC or whatever, a library for something else, assemble everything in main() and be good to go.
+- Package the service for deployment in a docker image
+- Black box test the produced docker image - unit testing the bits and pieces is not enough - the artifact has to be tested when it is fully assembled as well.
+Far too often I have seen services with high unit test coverage percentage fail to even start up when assembled for deployment.
+
 Configures a reproducible build that packages the Java application (using Gradle's core `application` plugin)
 in a tar file and configures Palantir's [`docker`](https://github.com/palantir/gradle-docker) plugin for further
-packaging of the service into a docker image.
+packaging of the built artifact into a docker image.
+The resulting docker image will be tagged with `${rootProject.name}:snapshot` and you can then
+retag it after the build and push it to some docker registry for deployment.
+The `rootProject.name` is configured in the `settings.gradle` file (and yes, this makes an
+assumption of one service per project build (and hopefully per repository too!)).
 
-Dockerfile should be provided by the user - there are no assumptions made about how the base
+The Dockerfile should be provided by the user - there are no assumptions made about how the base
 image should be configured.
 The easiest way to package the built application is to extract the built tar file and set the entrypoint like this:
 ```Dockerfile
