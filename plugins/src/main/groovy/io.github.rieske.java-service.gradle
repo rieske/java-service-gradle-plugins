@@ -1,9 +1,24 @@
 plugins {
     id("application")
-    id("com.palantir.docker")
+    id("com.bmuschko.docker-remote-api")
+}
+
+tasks.register("prepareDockerContext", Copy) {
+    into(layout.buildDirectory.dir("docker"))
+    from(tasks.named("distTar"))
+    from("Dockerfile")
+}
+
+tasks.register("docker", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+    dependsOn("prepareDockerContext")
+    inputDir.set(layout.buildDirectory.dir("docker"))
+    images.add("${rootProject.name}:snapshot")
 }
 
 testing.suites {
+    test {
+        useJUnitJupiter()
+    }
     blackBoxTest(JvmTestSuite) {
         targets {
             all {
@@ -17,8 +32,7 @@ testing.suites {
     }
 }
 
-tasks.withType(Test) {
-    useJUnitPlatform()
+tasks.withType(Test).configureEach {
     testLogging.exceptionFormat = "full"
 }
 
@@ -34,9 +48,4 @@ tasks.named("check") {
 
 tasks.named("build") {
     it.dependsOn(tasks.named("docker"))
-}
-
-docker {
-    name = "${rootProject.name}:snapshot"
-    files(tasks.named("distTar"))
 }
