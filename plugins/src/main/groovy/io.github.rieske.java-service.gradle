@@ -25,7 +25,10 @@ testing.suites {
                 testTask.configure {
                     mustRunAfter(test)
                     dependsOn(tasks.named("docker"))
-                    inputs.files(file("Dockerfile"), tasks.named("distTar").map(AbstractArchiveTask::getArchiveFile)).withPathSensitivity(PathSensitivity.RELATIVE)
+                    inputs.files(
+                            file("Dockerfile"),
+                            tasks.named("distTar").map(AbstractArchiveTask::getArchiveFile)
+                    ).withPathSensitivity(PathSensitivity.RELATIVE)
                 }
             }
         }
