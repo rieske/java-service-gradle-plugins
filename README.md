@@ -1,5 +1,8 @@
 # Gradle plugins for building Java services
 
+[![Actions Status](https://github.com/rieske/java-service-gradle-plugins/workflows/master/badge.svg)](https://github.com/rieske/java-service-gradle-plugins/actions/workflows/master.yml)
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/github/rieske/plugins/maven-metadata.xml.svg?colorB=007ec6&label=Plugin%20Portal)](https://plugins.gradle.org/plugin/io.github.rieske)
+
 ## io.github.rieske.java-service
 
 An opinionated plugin for building and testing a Java service:
