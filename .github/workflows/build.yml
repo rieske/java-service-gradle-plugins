@@ -1,9 +1,5 @@
-name: CI
-concurrency: ci
-
 on:
-  push:
-    branches-ignore: ["master"]
+  workflow_call:
 
 jobs:
   build:
