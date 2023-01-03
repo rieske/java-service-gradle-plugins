@@ -21,6 +21,23 @@ class JavaServicePluginTest extends PluginTest {
         """
     }
 
+    def givenGoodSourceAndBlackBoxTestsExist() {
+        file("src/main/java/Foo.java") << """
+            class Foo {
+            }
+        """
+        file("src/blackBoxTest/java/FooTest.java") << """
+            class FooTest {
+                void foo() {
+                } 
+            }
+        """
+    }
+
+    def givenConfigurationCacheIsEnabled() {
+        file("gradle.properties") << "org.gradle.unsafe.configuration-cache=true"
+    }
+
     def "uses JUnit platform for unit tests"() {
         given:
         buildFile << """
@@ -120,16 +137,7 @@ class JavaServicePluginTest extends PluginTest {
     def "caches black box test results"() {
         given:
         givenDockerfileExists()
-        file("src/main/java/Foo.java") << """
-            class Foo {
-            }
-        """
-        file("src/blackBoxTest/java/FooTest.java") << """
-            class FooTest {
-                void foo() {
-                } 
-            }
-        """
+        givenGoodSourceAndBlackBoxTestsExist()
         runTask("blackBoxTest")
 
         when:
@@ -142,16 +150,7 @@ class JavaServicePluginTest extends PluginTest {
     def "reruns black box tests when dockerfile changes"() {
         given:
         givenDockerfileExists()
-        file("src/main/java/Foo.java") << """
-            class Foo {
-            }
-        """
-        file("src/blackBoxTest/java/FooTest.java") << """
-            class FooTest {
-                void foo() {
-                } 
-            }
-        """
+        givenGoodSourceAndBlackBoxTestsExist()
         runTask("blackBoxTest")
 
         when:
@@ -167,16 +166,7 @@ class JavaServicePluginTest extends PluginTest {
     def "reruns black box tests when production code changes"() {
         given:
         givenDockerfileExists()
-        file("src/main/java/Foo.java") << """
-            class Foo {
-            }
-        """
-        file("src/blackBoxTest/java/FooTest.java") << """
-            class FooTest {
-                void foo() {
-                } 
-            }
-        """
+        givenGoodSourceAndBlackBoxTestsExist()
         runTask("blackBoxTest")
 
         when:
@@ -189,5 +179,38 @@ class JavaServicePluginTest extends PluginTest {
 
         then:
         result.task(":blackBoxTest").outcome == TaskOutcome.SUCCESS
+    }
+
+    def "stores configuration cache"() {
+        given:
+        givenDockerfileExists()
+        givenConfigurationCacheIsEnabled()
+        givenGoodSourceAndBlackBoxTestsExist()
+
+        when:
+        def result = runTask("build")
+
+        then:
+        result.task(":blackBoxTest").outcome == TaskOutcome.SUCCESS
+        result.task(":build").outcome == TaskOutcome.SUCCESS
+        result.output.contains("Calculating task graph as no configuration cache is available for tasks: build")
+        result.output.contains("Configuration cache entry stored.")
+    }
+
+    def "reuses configuration cache"() {
+        given:
+        givenDockerfileExists()
+        givenConfigurationCacheIsEnabled()
+        givenGoodSourceAndBlackBoxTestsExist()
+        runTask("build")
+
+        when:
+        def result = runTask("build")
+
+        then:
+        result.task(":blackBoxTest").outcome == TaskOutcome.UP_TO_DATE
+        result.task(":build").outcome == TaskOutcome.UP_TO_DATE
+        result.output.contains("Reusing configuration cache.")
+        result.output.contains("Configuration cache entry reused.")
     }
 }
