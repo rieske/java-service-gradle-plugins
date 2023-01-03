@@ -12,7 +12,7 @@ tasks.register("prepareDockerContext", Copy) {
 tasks.register("docker", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
     dependsOn("prepareDockerContext")
     inputDir.set(layout.buildDirectory.dir("docker"))
-    images.add("${rootProject.name}:snapshot")
+    images.add("${rootProject.name}:snapshot".toString())
 }
 
 testing.suites {
@@ -25,7 +25,7 @@ testing.suites {
                 testTask.configure {
                     mustRunAfter(test)
                     dependsOn(tasks.named("docker"))
-                    inputs.files(file("Dockerfile"), tasks.named("distTar")).withPathSensitivity(PathSensitivity.RELATIVE)
+                    inputs.files(file("Dockerfile"), tasks.named("distTar").map(AbstractArchiveTask::getArchiveFile)).withPathSensitivity(PathSensitivity.RELATIVE)
                 }
             }
         }
