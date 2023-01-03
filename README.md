@@ -1,7 +1,5 @@
 # Gradle plugins for building Java services
 
-WIP
-
 ## io.github.rieske.java-service
 
 An opinionated plugin for building and testing a Java service:
