@@ -1,5 +1,6 @@
 plugins {
     id("groovy-gradle-plugin")
+    id("com.gradle.plugin-publish").version("1.1.0")
 }
 
 group = "io.github.rieske.java-service-gradle-plugins"
@@ -16,4 +17,17 @@ dependencies {
 
     testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-3.0"))
     testImplementation("org.spockframework:spock-core")
+}
+
+gradlePlugin {
+    website = "https://github.com/rieske/java-service-gradle-plugins"
+    vcsUrl = "https://github.com/rieske/java-service-gradle-plugins"
+    afterEvaluate {
+        plugins {
+            def javaServicePlugin = it.findByName("io.github.rieske.java-service")
+            javaServicePlugin.displayName = "Gradle plugin for packaging and testing Java services"
+            javaServicePlugin.description = "Gradle plugin that packages your application into a Docker container and configures blackBoxTest task and source set"
+            javaServicePlugin.tags.set(["java", "service", "black-box-testing", "docker"])
+        }
+    }
 }
