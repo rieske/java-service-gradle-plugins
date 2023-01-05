@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: build
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/actions/build.yml
 
   publish:
     name: publish
