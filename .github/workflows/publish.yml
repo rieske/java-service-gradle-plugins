@@ -5,12 +5,18 @@ on:
   workflow_dispatch:
 
 jobs:
+  verify:
+    if: github.ref != 'refs/heads/master'
+    run: |
+      echo "Can only release from master branch"
+      exit 1
+
   build:
-    name: build
+    needs: verify
     uses: ./.github/workflows/build.yml
 
   publish:
-    name: publish
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Publish
