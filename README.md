@@ -5,13 +5,21 @@
 
 ## io.github.rieske.java-service
 
+### Requirements
+
+Requires at least:
+- Java 11 
+- Gradle 7.3 (the plugin uses the [JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html))
+
+### Description
+
 An opinionated plugin for building and testing a Java service:
 - Compile and unit test the components as usual
 - Package the application using Gradle's core `application` plugin.
 Might play with Spring and such as well, but I'm not a fan of all that heavyweight magic -
 just pick a library for a server, a library for JDBC or whatever, a library for something else, assemble everything in main() and be good to go.
 - Package the service for deployment in a docker image
-- Black box test the produced docker image - unit testing the bits and pieces is not enough - the artifact has to be tested when it is fully assembled as well.
+- [Black box test](https://github.com/rieske/black-box-testing) the produced docker image - unit testing the bits and pieces is not enough - the artifact has to be tested when it is fully assembled as well.
 Far too often I have seen services with high unit test coverage percentage fail to even start up when assembled for deployment.
 
 Configures a reproducible build that packages the Java application (using Gradle's core `application` plugin)
@@ -66,6 +74,9 @@ dependencies {
 ```
 
 And add a `Dockerfile` in the root of the subproject where this plugin is applied. 
+Note, the `my-service.tar` contains the applicatoin bundled using the `application` plugin and it 
+will be put in the Docker's context for the build.
+
 For example:
 ```Dockerfile
 FROM eclipse-temurin:17-jre
@@ -79,3 +90,11 @@ ENTRYPOINT /opt/service/$SERVICE_NAME/bin/$SERVICE_NAME
 # add the service archive last thing to utilize docker layer caching
 ADD $SERVICE_NAME.tar /opt/service/ 
 ```
+
+To build the service, use `./gradlew build` as usual. This will:
+- compile the sources
+- run the unit tests from the `test` source set
+- build the docker image using the configured `docker` task
+- run the `blackBoxTest` task using the sources in `blackBoxTest` source set
+ 
+The plugin is also compatible with Gradle's [Configuration cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
