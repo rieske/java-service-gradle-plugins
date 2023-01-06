@@ -239,7 +239,7 @@ class JavaServicePluginTest extends PluginTest {
                 void serviceStarts() {
                     try (var container = new GenericContainer<>(DockerImageName.parse("test-service:snapshot"))) {
                         container.withExposedPorts(8080).waitingFor(Wait.forListeningPort()).start();
-                        RestAssured.when().get("http://%s:%s/test".formatted(container.getHost(), container.getMappedPort(8080)))
+                        RestAssured.when().get("http://" + container.getHost() + ":" + container.getMappedPort(8080) + "/test")
                                 .then().body(Matchers.equalTo("$expectedMessage"));
                     }
                 }
