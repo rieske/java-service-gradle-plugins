@@ -23,7 +23,7 @@ just pick a library for a server, a library for JDBC or whatever, a library for 
 Far too often I have seen services with high unit test coverage percentage fail to even start up when assembled for deployment.
 
 Configures a reproducible build that packages the Java application (using Gradle's core `application` plugin)
-in a tar file and configures the [`docker`](https://github.com/bmuschko/gradle-docker-plugin) plugin for further
+in a tar file and configures a `docker` task for further
 packaging of the built artifact into a docker image.
 The resulting docker image will be tagged with `${rootProject.name}:snapshot` and you can then
 retag it after the build and push it to some docker registry for deployment.

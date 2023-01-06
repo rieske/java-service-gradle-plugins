@@ -108,7 +108,7 @@ class JavaServicePluginTest extends PluginTest {
 
         then:
         result.task(":docker").outcome == TaskOutcome.FAILED
-        result.output.contains("> Dockerfile does not exist")
+        result.output.contains("build/docker/Dockerfile: no such file or directory")
         result.task(":blackBoxTest") == null
     }
 
