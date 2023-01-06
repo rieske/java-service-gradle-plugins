@@ -1,14 +1,14 @@
 # Gradle plugins for building Java services
 
 [![Actions Status](https://github.com/rieske/java-service-gradle-plugins/workflows/master/badge.svg)](https://github.com/rieske/java-service-gradle-plugins/actions/workflows/master.yml)
-[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/github/rieske/plugins/maven-metadata.xml.svg?colorB=007ec6&label=Plugin%20Portal)](https://plugins.gradle.org/plugin/io.github.rieske)
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/io/github/rieske/plugins/maven-metadata.xml.svg?colorB=007ec6&label=Plugin%20Portal)](https://plugins.gradle.org/plugin/io.github.rieske.java-service)
 
 ## io.github.rieske.java-service
 
 ### Requirements
 
 Requires at least:
-- Java 11 
+- Java 11
 - Gradle 7.3 (the plugin uses the [JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html))
 
 ### Description
@@ -37,7 +37,7 @@ The easiest way to package the built application is to extract the built tar fil
 # FROM directive and other base image setup goes here
 ENV SERVICE_NAME=my-service
 ENTRYPOINT /opt/service/$SERVICE_NAME/bin/$SERVICE_NAME
-ADD $SERVICE_NAME.tar /opt/service/ 
+ADD $SERVICE_NAME.tar /opt/service/
 ```
 
 Configures `blackBoxTest` source set that depends on the service's docker image.
@@ -66,15 +66,15 @@ application {
 dependencies {
     // implementation("...")
     // testImplementation("...")
-    
+
     // black box test implementation configuration does not depend on implementation or testImplementation
     // You will most likely want JUnit and testcontainers dependencies here for starters
     // blackBoxTestImplementation("...")
 }
 ```
 
-And add a `Dockerfile` in the root of the subproject where this plugin is applied. 
-Note, the `my-service.tar` contains the applicatoin bundled using the `application` plugin and it 
+And add a `Dockerfile` in the root of the subproject where this plugin is applied.
+Note, the `my-service.tar` contains the applicatoin bundled using the `application` plugin and it
 will be put in the Docker's context for the build.
 
 For example:
@@ -88,7 +88,7 @@ ENV JAVA_OPTS -Xmx64m -Xms64m
 ENV SERVICE_NAME=my-service
 ENTRYPOINT /opt/service/$SERVICE_NAME/bin/$SERVICE_NAME
 # add the service archive last thing to utilize docker layer caching
-ADD $SERVICE_NAME.tar /opt/service/ 
+ADD $SERVICE_NAME.tar /opt/service/
 ```
 
 To build the service, use `./gradlew build` as usual. This will:
@@ -96,5 +96,5 @@ To build the service, use `./gradlew build` as usual. This will:
 - run the unit tests from the `test` source set
 - build the docker image using the configured `docker` task
 - run the `blackBoxTest` task using the sources in `blackBoxTest` source set
- 
+
 The plugin is also compatible with Gradle's [Configuration cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
