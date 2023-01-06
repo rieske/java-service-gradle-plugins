@@ -25,7 +25,7 @@ abstract class PluginTest extends Specification {
         file('src/main/java').mkdirs()
         file('src/test/java').mkdirs()
         settingsFile = file('settings.gradle') << """
-            rootProject.name = 'test'
+            rootProject.name = 'test-service'
             dependencyResolutionManagement {
                 repositories {
                     mavenCentral() 
