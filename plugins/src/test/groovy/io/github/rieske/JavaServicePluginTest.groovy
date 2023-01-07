@@ -164,6 +164,23 @@ class JavaServicePluginTest extends PluginTest {
         result.task(":blackBoxTest").outcome == TaskOutcome.SUCCESS
     }
 
+    def "fails the build when dockerfile gets broken"() {
+        given:
+        givenDockerfileExists()
+        givenGoodSourceAndBlackBoxTestsExist()
+        runTask("blackBoxTest")
+
+        when:
+        dockerfile << """
+            this can't work
+        """
+        def result = runTaskWithFailure("blackBoxTest")
+
+        then:
+        result.task(":docker").outcome == TaskOutcome.FAILED
+        result.task(":blackBoxTest") == null
+    }
+
     def "reruns black box tests when production code changes"() {
         given:
         givenDockerfileExists()
