@@ -1,6 +1,5 @@
 plugins {
     id("application")
-    id("com.bmuschko.docker-remote-api")
 }
 
 def dockerfile = layout.projectDirectory.file("Dockerfile")
@@ -12,10 +11,12 @@ def prepareDockerContextTask = tasks.register("prepareDockerContext", Copy) {
     from(dockerfile)
 }
 
-def dockerTask = tasks.register("docker", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+def dockerTask = tasks.register("docker", Exec) {
     dependsOn(prepareDockerContextTask)
-    inputDir.set(dockerContextDir)
-    images.add("${rootProject.name}:snapshot".toString())
+    inputs.files(dockerfile, applicationTarArchive).withPathSensitivity(PathSensitivity.RELATIVE)
+    workingDir = dockerContextDir
+    commandLine = ["docker", "build", "-t", "${rootProject.name}:snapshot", "."]
+    outputs.dir(dockerContextDir)
 }
 
 testing.suites {

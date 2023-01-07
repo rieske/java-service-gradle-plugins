@@ -108,7 +108,7 @@ class JavaServicePluginTest extends PluginTest {
 
         then:
         result.task(":docker").outcome == TaskOutcome.FAILED
-        result.output.contains("> Dockerfile does not exist")
+        result.output.contains("build/docker/Dockerfile: no such file or directory")
         result.task(":blackBoxTest") == null
     }
 
@@ -254,7 +254,7 @@ class JavaServicePluginTest extends PluginTest {
             class ServiceTest {
                 @Test
                 void serviceStarts() {
-                    try (var container = new GenericContainer<>(DockerImageName.parse("test-service:snapshot"))) {
+                    try (GenericContainer container = new GenericContainer(DockerImageName.parse("test-service:snapshot"))) {
                         container.withExposedPorts(8080).waitingFor(Wait.forListeningPort()).start();
                         RestAssured.when().get("http://" + container.getHost() + ":" + container.getMappedPort(8080) + "/test")
                                 .then().body(Matchers.equalTo("$expectedMessage"));
