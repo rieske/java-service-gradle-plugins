@@ -8,6 +8,7 @@ version = "1.0.0"
 
 tasks.named("test") {
     useJUnitPlatform()
+    inputs.property("TEST_GRADLE_VERSION", System.getenv("TEST_GRADLE_VERSION")).optional(true)
 }
 
 dependencies {
