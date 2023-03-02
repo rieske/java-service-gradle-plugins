@@ -12,9 +12,7 @@ tasks.named("test") {
 }
 
 dependencies {
-    // TODO: 9.1.0 seems to hang on Java 11
-    //implementation("com.bmuschko:gradle-docker-plugin:9.1.0")
-    implementation("com.bmuschko:gradle-docker-plugin:9.0.1")
+    implementation("com.bmuschko:gradle-docker-plugin:9.2.1")
 
     testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-3.0"))
     testImplementation("org.spockframework:spock-core")
