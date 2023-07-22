@@ -4,16 +4,15 @@ plugins {
 }
 
 group = "io.github.rieske.java-service-gradle-plugins"
-version = "1.0.0"
+version = "1.0.1"
 
 tasks.named("test") {
     useJUnitPlatform()
+    inputs.property("TEST_GRADLE_VERSION", System.getenv("TEST_GRADLE_VERSION")).optional(true)
 }
 
 dependencies {
-    // TODO: 9.1.0 seems to hang on Java 11
-    //implementation("com.bmuschko:gradle-docker-plugin:9.1.0")
-    implementation("com.bmuschko:gradle-docker-plugin:9.0.1")
+    implementation("com.bmuschko:gradle-docker-plugin:9.2.1")
 
     testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-3.0"))
     testImplementation("org.spockframework:spock-core")

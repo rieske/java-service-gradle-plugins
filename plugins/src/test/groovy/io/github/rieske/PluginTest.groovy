@@ -9,8 +9,6 @@ import spock.lang.TempDir
 
 abstract class PluginTest extends Specification {
 
-    String gradleVersion = GradleVersion.current().version
-
     @TempDir
     File testProjectDir
 
@@ -48,10 +46,20 @@ abstract class PluginTest extends Specification {
     }
 
     private GradleRunner makeGradleRunner(String task) {
+        def gradleVersion = getGradleVersion()
+        println("Using $gradleVersion")
         return GradleRunner.create()
-                .withGradleVersion(gradleVersion)
+                .withGradleVersion(gradleVersion.version)
                 .withProjectDir(testProjectDir)
                 .withArguments(task, '--stacktrace')
                 .withPluginClasspath()
+    }
+
+    private GradleVersion getGradleVersion() {
+        String gradleVersionProperty = System.getenv("TEST_GRADLE_VERSION")
+        if (gradleVersionProperty != null) {
+            return GradleVersion.version(gradleVersionProperty)
+        }
+        return GradleVersion.current()
     }
 }
