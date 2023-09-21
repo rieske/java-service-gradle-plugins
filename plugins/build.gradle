@@ -12,7 +12,7 @@ tasks.named("test") {
 }
 
 dependencies {
-    implementation("com.bmuschko:gradle-docker-plugin:9.3.2")
+    implementation("com.bmuschko:gradle-docker-plugin:9.3.3")
 
     testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-3.0"))
     testImplementation("org.spockframework:spock-core")
