@@ -135,7 +135,7 @@ class JavaServicePluginTest extends PluginTest {
         result.output.contains("symbol:   class Foo")
     }
 
-    def "caches black box test results"() {
+    def "does not rerun black box tests when up to date"() {
         given:
         givenDockerfileExists()
         givenGoodSourceAndBlackBoxTestsExist()
@@ -146,6 +146,20 @@ class JavaServicePluginTest extends PluginTest {
 
         then:
         result.task(":blackBoxTest").outcome == TaskOutcome.UP_TO_DATE
+    }
+
+    def "caches black box test results"() {
+        given:
+        givenDockerfileExists()
+        givenGoodSourceAndBlackBoxTestsExist()
+        runTask("blackBoxTest", "--build-cache")
+        runTask("clean")
+
+        when:
+        def result = runTask("blackBoxTest", "--build-cache")
+
+        then:
+        result.task(":blackBoxTest").outcome == TaskOutcome.FROM_CACHE
     }
 
     def "reruns black box tests when dockerfile changes"() {

@@ -33,8 +33,8 @@ abstract class PluginTest extends Specification {
         buildFile = file('build.gradle')
     }
 
-    BuildResult runTask(String task) {
-        def result = makeGradleRunner(task).build()
+    BuildResult runTask(String task, String... arguments) {
+        def result = makeGradleRunner(task, arguments).build()
         println(result.output)
         return result
     }
@@ -45,13 +45,14 @@ abstract class PluginTest extends Specification {
         return result
     }
 
-    private GradleRunner makeGradleRunner(String task) {
+    private GradleRunner makeGradleRunner(String task, String... arguments) {
         def gradleVersion = getGradleVersion()
         println("Using $gradleVersion")
+        List<String> buildArgs = [task, '--stacktrace'] + arguments.flatten()
         return GradleRunner.create()
                 .withGradleVersion(gradleVersion.version)
                 .withProjectDir(testProjectDir)
-                .withArguments(task, '--stacktrace')
+                .withArguments(buildArgs)
                 .withPluginClasspath()
     }
 
