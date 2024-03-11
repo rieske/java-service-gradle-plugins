@@ -224,6 +224,7 @@ class JavaServicePluginTest extends PluginTest {
         result.task(":blackBoxTest").outcome == TaskOutcome.SUCCESS
         result.task(":build").outcome == TaskOutcome.SUCCESS
         result.output.contains("Calculating task graph as no configuration cache is available for tasks: build")
+         || result.output.contains("Calculating task graph as no cached configuration is available for tasks: build")
         result.output.contains("Configuration cache entry stored.")
     }
 
